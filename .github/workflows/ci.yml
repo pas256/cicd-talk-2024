@@ -1,0 +1,63 @@
+# This workflow will run the entire CI/CD pipeline, deploying to production
+name: "CI/CD Pipeline"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # debug:
+  #   name: Debugging for GitHub Actions
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Dump env
+  #       run: env | sort
+  #     - name: Dumb github context
+  #       run: echo "${{ toJson(github) }}"
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go 1.23
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run tests
+        run: go test
+
+  lint:
+    name: Lint Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+         terraform_version: 1.9.5
+
+      - name: Lint terraform
+        run: |
+          cd tf
+          terraform fmt -check -recursive
+
+      - name: Validate terraform
+        run: |
+          cd tf
+          for dir in $(ls -d */); do
+            cd $dir
+            terraform init
+            terraform validate
+            cd ..
+          done
