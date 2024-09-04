@@ -36,3 +36,17 @@ The workflow consists of multiple jobs:
 
 - `test`: Runs the application tests
 - `lint`: Lints and validates the Terraform code
+- `make_image`: Builds, tags & pushes the app's image to ECR
+- `deploy`: Deploys the app to ECS Fargate
+
+This workflow was extracted from a real-world project ([Ensorcell](https://ensorcell.co)), so it will not work out of the box for you and does not have the required permissions to work in this repository. You will see the failure to access the AWS account right here:
+
+https://github.com/pas256/cicd-talk-2024/actions/runs/10695330006/job/29648591008
+
+## License
+
+This library is licensed under the Apache 2.0 License, so use this as you wish.
+
+## Questions
+
+If you have any questions or suggestions, feel free to open a GitHub Issue.
